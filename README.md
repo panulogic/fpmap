@@ -1,7 +1,7 @@
 # fpmap
 Support for Functional Programming in JavaScript via the extension-method **Function.prototype.map()**.
 
-Following excerpts show some ways of using "fmap". These samples use a small set of functions like ```double()``` defined in _Section 5_ below. For more explanation and examples see  fpmap_test.js.
+Following excerpts show some ways of using "fpmap". These samples use a small set of functions like ```double()``` defined in _Section 5_ below. For more explanation and examples see  fpmap_test.js.
 
 
 #### 1. INSTALLATION
