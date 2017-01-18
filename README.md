@@ -29,9 +29,15 @@ Following excerpts show some ways of using "fmap". These samples use a small set
 
 #### 3. MAPPING OVER OBJECTS
 
+###### 3.1  Transforming
     var doubleO  = double.map ({x:1, y:2});
     ok(doubleO.x === 2);
     ok (doubleO.y === 4);
+
+###### 3.2  Filtering
+    var oddOnly  = odd.map({x:1, y:2});
+    ok (oddOnly.x === 1);
+    ok (oddOnly.y === undefined);
 
 #### 4. MAPPING OVER FUNCTIONS
 

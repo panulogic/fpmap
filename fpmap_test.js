@@ -51,15 +51,21 @@ function runTests (fpm)
  
 
   // 3. MAPPING OVER OBJECTS
-
+  
+  // 3.1 TRANSFORMING
   var doubleO  = double.map({x:1, y:2});
 	ok(doubleO.x === 2);
 	ok(doubleO.y === 4);
  
-
+  // 3.1 FILTERING
+  var oddOnly  = odd.map({x:1, y:2});
+	ok(oddOnly.x === 1);
+	ok(oddOnly.y === undefined);
+ 
+ 
   // 4. MAPPING OVER FUNCTIONS
 
-  // 4.1 BASIC
+  // 4.1 TRANSFORMING
   var asIs = it.map(it); // it just returns its argument
 	ok (asIs (34) === 34);
 	
@@ -70,7 +76,7 @@ function runTests (fpm)
 	ok (times8	(1) === 8);
 
 
-  // 4.2 USING FILTERS
+  // 4.2 FILTERING
   // Filters are functions which may return
   // undefined, such results are dropped
   // from the pipeline ASAP in effect
