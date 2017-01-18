@@ -7,11 +7,11 @@
   ========================================
  */
  
-var FPM = require("./fpmap");
-runTests(FPM);
+var fpm = require("./fpmap");
+runTests(fpm);
 return;
 
-function runTests (FPM)
+function runTests (fpm)
 {
 
   // 1. INSTALLATION
@@ -20,7 +20,7 @@ function runTests (FPM)
 	// assuming it has not been installed already.
   // After this every function has the method map().
 
-	FPM (); 
+	fpm (); 
   ok (it.map); // 'it' could be any function
     
   // 1.2  
@@ -28,8 +28,8 @@ function runTests (FPM)
   // many times as long as the exact same
   // function gets stored as Function.prototype.map.
   // But see section 6 below for how to cause an error.
-  FPM ();
-  FPM ();
+  fpm ();
+  fpm ();
   ok (it.map);
  
 
@@ -37,11 +37,18 @@ function runTests (FPM)
   // The functions double(), odd(), even(), it()
   // and ok() are defined at the end of this file.
    
+  // 2.1 Transforming
 	var doubled    = double.map([1,2,3]);
 	ok(doubled[0] === 2);
 	ok(doubled[1] === 4);
 	ok(doubled[2] === 6);
 
+  // 2.2 Filtering
+	var odds    = odd.map([1,2,3]);
+	ok(odds[0] === 1);
+	ok(odds[1] === 3);
+	ok(odds.length === 2);
+ 
 
   // 3. MAPPING OVER OBJECTS
 
@@ -106,7 +113,7 @@ function runTests (FPM)
 	// metod-name  'map9' as the name as which
 	// it is installed. Note: it will be exist
 	// as both because of these tests.
-	FPM   ('map9') ;
+	fpm  ('map9') ;
 	
 	var asIs			= it.map9 (it);
 	var times2		= it.map9 (double);
@@ -124,9 +131,9 @@ function runTests (FPM)
   // You can also install it under a different name
   
   ok (! it.map7); // does not exist so far
-  FPM ('map7');
+  fpm ('map7');
   ok (it.map7);   // now it does.
-  FPM ('map7');   // Installs the same thing again
+  fpm ('map7');   // Installs the same thing again
   ok (it.map7);
   
   // Assume someone else has earlier installed
@@ -137,7 +144,7 @@ function runTests (FPM)
   // that is not our version  causes an error:
   var e2 = false;
   try
-  { FPM ('map7');
+  { fpm ('map7');
   } catch (e)
   { e2 = e;
   }
@@ -145,7 +152,7 @@ function runTests (FPM)
 
   Function.prototype.map7 = undefined;
   // Now it is available again:
-  FPM ('map7');
+  fpm ('map7');
   // Cleanup: 
   Function.prototype.map7 = undefined;
 
