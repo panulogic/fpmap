@@ -112,17 +112,8 @@ function runTests (fpm)
   ok (doublesWhichAreOdd(2 ) === undefined);
   ok (doublesWhichAreOdd(3 ) === undefined);
 
-  // 5. MAPPING OVER STRINGS
-  
-  debugger
-  var s = titleCased.map("hello world now");
 
-  function titleCased (aString, pr3eviousResults, originalString)
-  { debugger
-  }
-
-
-  // 6. RUNNING UNDER AN ALIAS 
+  // 5. RUNNING UNDER AN ALIAS 
 
   // Do the same tests as above but by using
 	// metod-name  'map9' as the name as which
@@ -142,7 +133,7 @@ function runTests (fpm)
   Function.prototype.map9 = undefined;
  
 
-  // 7. AVOIDING NAME CONFLICTS
+  // 6. AVOIDING NAME CONFLICTS
   // You can also install it under a different name
   
   ok (! it.map7); // does not exist so far
