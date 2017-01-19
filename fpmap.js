@@ -38,7 +38,13 @@ function installFpm (methodName)
 
   function funkProtoMap (objectOrArrayOrFunction, thisArg)
   { var resultA, resultB;
-    if (objectOrArrayOrFunction.constructor === Array)
+    if ( objectOrArrayOrFunction === undefined)
+    { throw "funkProtoMap() called without argument";
+    }
+    if (objectOrArrayOrFunction.constructor === String)
+    { return funkProtoMap_string.call (this, objectOrArrayOrFunction, thisArg);
+    }
+     if (objectOrArrayOrFunction.constructor === Array)
     { return funkProtoMap_array.call (this, objectOrArrayOrFunction, thisArg);
     }
     if (typeof objectOrArrayOrFunction === "object")
@@ -47,6 +53,19 @@ function installFpm (methodName)
     return ( funkProtoMap_function.call 
               (this, objectOrArrayOrFunction, thisArg)
            );
+
+      function funkProtoMap_string (anObject, thisArg)
+      { var result = "";
+        debugger
+
+        for (var p in anObject)
+        { var v = this (anObject[p], p, anObject) ;
+          if (v !== undefined)
+          { result  [p] = v;
+          }
+        }
+        return result;
+      }
 
       function funkProtoMap_object (anObject, thisArg)
       { var result  = new anObject.constructor(); 
