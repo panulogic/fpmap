@@ -16,9 +16,9 @@
    for use-examples.
    ========================================= */
 
-module.exports = installFpm;
+module.exports = fpm_installer;
 
-function installFpm (methodName)
+function fpm_installer (methodName)
 { methodName = methodName ? methodName : 'map';
   var fp = Function.prototype;
   if (fp[methodName] === funkProtoMap)
@@ -36,22 +36,67 @@ function installFpm (methodName)
   return;
 }
 
-  function funkProtoMap (objectOrArrayOrFunction, thisArg)
+  function funkProtoMap (objectOrArrayOrFunctionOrString, thisArg)
   { var resultA, resultB;
-    if (objectOrArrayOrFunction.constructor === Array)
-    { return funkProtoMap_array.call (this, objectOrArrayOrFunction, thisArg);
+    var arg = objectOrArrayOrFunctionOrString;
+    if ( (arg === undefined)
+      || (arg === null)
+       )
+    { throw "funkProtoMap() called with no argument or null";
     }
-    if (typeof objectOrArrayOrFunction === "object")
-    { return funkProtoMap_object.call (this, objectOrArrayOrFunction, thisArg);
+    var Ctor =  arg.constructor;
+    var type =  typeof(arg);
+
+    if (Ctor === String)
+    { return funkProtoMap_string.call    (this, arg, thisArg);
     }
-    return ( funkProtoMap_function.call 
-              (this, objectOrArrayOrFunction, thisArg)
-           );
+    if (Ctor === Array)
+    { return funkProtoMap_array.call     (this, arg, thisArg);
+    }
+    if (Ctor === Function)
+    { return funkProtoMap_function.call (this, arg, thisArg);
+    }
+    if (type === "object")
+    { return funkProtoMap_object.call    (this, arg, thisArg);
+    }
+    throw "funkProtoMap() called with no argument or null";
+
+      function funkProtoMap_string (aString, thisArg)
+      { aString = (aString + "").trim();
+        var produced      = "";
+        var consumable    = aString;
+        var nextIndex = 0;
+        while (true)
+        { var stringy
+          = this.call 
+            (thisArg, consumable, produced, aString);
+          if (stringy === undefined)
+          { return undefined;
+          }
+          produced  += stringy + "" ;      
+          nextIndex += stringy.length;
+          if (nextIndex >= aString.length)
+          { consumable = "";
+            var lastResult   = this.call 
+             (thisArg, consumable, produced, aString);
+            if (lastResult === undefined)
+            { return undefined;
+            }
+            return produced + lastResult;
+          }
+          consumable = aString.slice (nextIndex); 
+        }
+        if (stringy === undefined)
+        { debugger
+          return undefined;
+        }
+        return produced;
+      }
 
       function funkProtoMap_object (anObject, thisArg)
       { var result  = new anObject.constructor(); 
         for (var p in anObject)
-        { var v = this (anObject[p], p, anObject) ;
+        { var v = this.call (thisArg, anObject[p], p, anObject) ;
           if (v !== undefined)
           { result  [p] = v;
           }
@@ -87,7 +132,8 @@ function installFpm (methodName)
           if (! isArray)
           { firstResult = [firstResult];
           }
-          var result =  $rightFunk.apply ($thisArg, firstResult);
+          var result 
+            = $rightFunk.apply ($thisArg, firstResult);
           return result;   
         }
       }
