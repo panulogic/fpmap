@@ -495,12 +495,11 @@ function runTests (FpMap)
  }
 
   /*
- 
+ 6 and 7 coming up
   */
+   
 
-
-
-  // 6. RUNNING UNDER AN ALIAS TO AVOID POSSIBLE NAME-CONFLICTS
+  // 8. RUNNING UNDER AN ALIAS TO AVOID POSSIBLE NAME-CONFLICTS
   // ==========================================================
 	// You can install it under any name you wish, and you need to
 	// if the method-name "map" was used for something else as
