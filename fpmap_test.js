@@ -494,10 +494,76 @@ function runTests (FpMap)
      
  }
 
-  /*
- 6 and 7 coming up
-  */
+
+	// 6. MAPPING OVER NUMBERS
+  // =========================
+	// aFunction.map(n, thisArg)  returns a function which
+	// when called with an initial argument will call
+	// 'aFunction' with it, then keeps on calling
+	// 'aFunction' n-1 times more with the previous result
+	// as 1st argument and all previous results as array
+	// as 2nd argument. The iteration is over when the
+  // 'aFunciton' has been calld n times or it has reurned
+	// undefined as its result. When it does the most recentrly
+	// reurned (non-undefined) result is returned as the final
+	// result.
+	// If the generated function is initially given an array
+	// as 2nd optional  argument that tghat is used as the array
+	// into which all results are collected so at the end
+	// you have access to them all, if you so wish.
+	//
+	// Note when the function is created the 2nd argument
+	// 'thisArg' can be used? NO that would mean you can ot
+	// change it later, so if we don't allow you to give
+	// it intially you can of course call or apply
+	// the generated function with any 'this' you wish.
+
+
+	debugger
+  var looperF = numbersTest.map(3);
+  var n = looperF(1);
+  debugger
    
+
+function numbersTest (arg, previousResults, firstArgument)
+{ debugger
+
+}
+
+
+  // 7. Mapping over RegExp
+	// ======================
+	// myFunc.map(aRegExp)
+	// returns a function which when called with a string argument
+	// which initially matches the regular expression against the
+	// string and then calls the function with the repeated macthes
+	// repeatedly. On every round the function can decide to
+	// exit early by returning undefined. It also gets as 2nd
+	// argument all the previous matched strings.
+	// When the generated function is called you cangive as
+	// 2nd argument an array into which all the macthes
+	// are inserted so you can then see them all after the
+	// loops are over, if you need to. The genrated function
+	// itself reurns as its result the last non-undefined
+	// matched string.
+
+// BETTER: If the regexp contains a matching group the
+// group 1 of them is collected into the result rather
+// than the whole match. If you want the whole match
+// dont specify such a group.
+// AND NOTE:  THE FUNCTION GETS TO INSPECT EACH MATCH.
+// WHAT IT RETURNS IS WHAT GOES INTO THE COLLECTED FINAL
+// RESULTS. This gives you the extra level of control
+// of being able to TRANSFORM THE MATCHES within the
+// same call.
+//
+// BONUS: the loop function is passed a 3rd argument
+// which is an array of strings that were SKIPPED when
+// perfroming the matching.
+//
+// note also: The funciton need not reurn strings
+// but can reurn arbitrary objects.
+
 
   // 8. RUNNING UNDER AN ALIAS TO AVOID POSSIBLE NAME-CONFLICTS
   // ==========================================================

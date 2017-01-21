@@ -66,8 +66,7 @@ function fpm_installer (methodName)
         var produced      = "";
         var consumable    = aString;
         var nextIndex = 0;
-
-        while (6 < 9 )
+        while (true)
         { var stringy
           = this.call 
             (thisArg, consumable, produced, aString);
@@ -86,6 +85,10 @@ function fpm_installer (methodName)
             return produced + lastResult;
           }
           consumable = aString.slice (nextIndex); 
+        }
+        if (stringy === undefined)
+        { debugger
+          return undefined;
         }
         return produced;
       }
