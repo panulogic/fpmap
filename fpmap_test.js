@@ -697,7 +697,7 @@ function runTests (FpMap)
 // 6.1 Fixed-distance numeric series
 
   function oneToN (anArray)
-	{ anArray.push (arr.length + 1) ;
+	{ anArray.push ( anArray.length + 1) ;
 		return anArray ;
 	}
 	
