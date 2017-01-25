@@ -27,12 +27,25 @@ function fpm_installer (methodName)
   if (fp[methodName])
   { var em = "Can not install the method '"
            +  methodName 
-           + "' as Function.prototype.map "
-           + " because that already exists "
-           + " and has a different value. "
+           + "' to Function.prototype "
+           + "because that already exists "
+           + "and has the value: "
+           + fp[methodName];
+
     throw new Error(em);
   }
-  fp [methodName] = funkProtoMap;
+  Object.defineProperty
+ (fp, methodName, 
+  { value       : funkProtoMap,
+    writable    : false,
+    enumerable  : false,
+    configurable: false
+ });
+
+  ok (fp [methodName] === funkProtoMap);
+
+  ok (fp [methodName] === funkProtoMap);
+
   return;
 }
 
@@ -56,20 +69,88 @@ function fpm_installer (methodName)
     if (Ctor === Function)
     { return funkProtoMap_function.call (this, arg, thisArg);
     }
+    if (Ctor === Number)
+    { return funkProtoMap_number.call (this, arg, thisArg);
+    }
+    if (Ctor === RegExp)
+    { return funkProtoMap_reg.call (this, arg, thisArg);
+    }
     if (type === "object")
     { return funkProtoMap_object.call    (this, arg, thisArg);
     }
-    throw "funkProtoMap() called with no argument or null";
+    throw "funkProtoMap() called with invalid argument";
+
+    function funkProtoMap_reg  ($regExp, $thisArg)
+    { var $transformer = this;
+      var $flags = $regExp.flags;
+      if (! $flags.match(/g/))
+      { $flags += 'g';
+      }
+      if ($thisArg)
+      { return ALL_MATCHES.bind($thisArg);
+      }
+      return ALL_MATCHES;
+
+      function ALL_MATCHES (inString)
+      { var results = [];
+
+        var $resultString       = "";
+        var transformer         = $transformer;
+        var reg                 = new RegExp ($regExp,  $flags);
+        var lastProcessedIndex  = -1;
+        var ix                  = 0;
+        while (true)
+        { ix++;  
+          var m = reg.exec(inString);
+          if (! m)
+          { break;
+          }
+          var startOfMatch   = m.index;
+          var startOfCopy    = lastProcessedIndex + 1;
+          var skipped        = inString.slice (startOfCopy, startOfMatch);
+          $resultString     += skipped;
+          lastProcessedIndex = startOfMatch + m[0].length - 1;
+
+          var aResult 
+          = transformer.call (this, m, results, inString);
+          if (aResult === undefined)
+          { $resultString += (m[0] + "");
+            continue; 
+          }
+          $resultString   += aResult + "";
+          m._replacement   = aResult;
+          m.toString       = replacementStringF;
+          results.push(m);
+        }
+        var rest  = inString.slice
+                    ( lastProcessedIndex + 1
+                    , inString.length
+                    );
+        $resultString   += rest;
+        results.toString = stringResultFunk;
+        return results;
+
+        function stringResultFunk ()
+        { return $resultString;
+        }
+
+        function replacementStringF ()
+        { return this._replacement + "";
+        }
+      }
+    }
 
       function funkProtoMap_string (aString, thisArg)
       { aString = (aString + "").trim();
-        var produced      = "";
-        var consumable    = aString;
-        var nextIndex = 0;
+        var produced    = "";
+        var consumable  = aString;
+        var nextIndex   = 0;
+
         while (true)
         { var stringy
           = this.call 
             (thisArg, consumable, produced, aString);
+
           if (stringy === undefined)
           { return undefined;
           }
@@ -86,11 +167,6 @@ function fpm_installer (methodName)
           }
           consumable = aString.slice (nextIndex); 
         }
-        if (stringy === undefined)
-        { debugger
-          return undefined;
-        }
-        return produced;
       }
 
       function funkProtoMap_object (anObject, thisArg)
@@ -116,14 +192,16 @@ function fpm_installer (methodName)
         return resultB;
        }
 
-      function funkProtoMap_function ($rightFunk, thisArg)
+      function funkProtoMap_function ($rightFunk, $arg2)
       { var $leftFunk = this;
-        $thisArg = thisArg ? thisArg : this;
+        if ( $rightFunk === Date)
+        { return TIMER;
+        }
         return FUNK_MAPPED;
 
         function FUNK_MAPPED (vargs)
         { var args        = [].slice.call(arguments);
-          var firstResult = $leftFunk.apply($thisArg, args);
+          var firstResult = $leftFunk.apply(this, args);
           if (firstResult === undefined)
           { return undefined;
           }      
@@ -133,8 +211,68 @@ function fpm_installer (methodName)
           { firstResult = [firstResult];
           }
           var result 
-            = $rightFunk.apply ($thisArg, firstResult);
+            = $rightFunk.apply (this, firstResult);
           return result;   
+        }
+
+        function TIMER ( argsToApply )
+        { if (argsToApply === undefined)
+          { argsToApply = [];
+          }
+          if (argsToApply === null)
+          { argsToApply = [];
+          }
+          if (argsToApply.constructor !== Array)
+          { argsToApply = [argsToApply];
+          } 
+          var times = $arg2;
+          times = times ? times : 1;
+
+          var start =  (new Date()).getTime();
+
+          for (var j=0; j < times; j++)
+          { $leftFunk.apply(this, argsToApply);
+          }
+          var end =  (new Date()).getTime();
+          return end - start;
         }
       }
     }
+
+function funkProtoMap_number ($noOfLoops)
+{ var $leftFunk = this;
+  return FUNK ;
+
+  function FUNK  (firstArg, memory)
+  { memory          = memory ? memory : [];
+    if (firstArg === undefined)
+    { firstArg = [];
+    }
+    var args        = [].slice.call(arguments);
+    var leftFunk    = $leftFunk;
+    var noOfLoops   = $noOfLoops;
+    var nextArg     = firstArg;
+    var mostRecentResult = undefined;
+
+    for (var j = noOfLoops; j > 0; j--)
+    { var v = leftFunk.call
+              (this, nextArg, memory, firstArg);
+      if (v === undefined)
+      { return mostRecentResult; 
+      } 
+
+      mostRecentResult = v;
+      nextArg          = v;
+    }      
+
+    return mostRecentResult;
+  }
+}
+
+function ok (bool, msg)
+{ msg = msg ? msg : "ok() failed";
+  if(! bool)
+  { throw msg;
+  }
+  return true;
+}
