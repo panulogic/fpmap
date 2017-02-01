@@ -1,7 +1,7 @@
 {
   "name": "fpmap",
-  "version": "1.2.3",
-  "description": "Method map() for Function.prototype",
+  "version": "1.2.4" ,
+  "description": "The method 'map()' for Function.prototype",
 
   "main": "fpmap.js",
 

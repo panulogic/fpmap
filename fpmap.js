@@ -16,7 +16,8 @@
    for use-examples.
    ========================================= */
 
-module.exports = fpm_installer;
+"use strict"
+module.exports = fpm_installer
 
 function fpm_installer (methodName)
 { methodName = methodName ? methodName : 'map';

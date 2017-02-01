@@ -7,6 +7,7 @@
   ========================================
  */
  
+"use strict"
 
 runTests();
 console.log ("FPM_test.js: ALL TESTS PASSED "
@@ -26,8 +27,11 @@ function runTests (FpMap)
   testNumbers       ();
   testStrings       ();
 
-  // cleanup:
-  Function.prototype.map = undefined;
+ // cleanup:
+ //   Function.prototype.map = undefined;
+ // the above would cause an error in
+ // strict mode so we don't do it any more.
+
   return;
 
   function testInstallation ()
@@ -99,7 +103,10 @@ function runTests (FpMap)
 	// same thing that existed there already. But
 	// show that we get an error if that was not the case:
 
-	Function.prototype[name2] = it; // HAS NO EFFECT
+	// Function.prototype[name2] = it; 
+  // We are now in strict-mode so the above would cause 
+  // and error.
+
   // FpMap ('map7235') assigns the method
   // with Object.defineProperty() as a 
   // non-writable property. That has the effect
@@ -205,7 +212,7 @@ function runTests (FpMap)
   ok (dods.length === 2);
    
   // What if we reverse the stages of this pipeline?
-  doublesWhichAreOdd = double.map(odd);
+  var doublesWhichAreOdd = double.map(odd);
   // There are no doubles which are odd
   // so the above function returns undefined 
   // for every number. Once you have doubled
@@ -574,7 +581,7 @@ function runTests (FpMap)
 
     ok (dogs[0].name() === "Fido");
     ok (dogs[1].name() === "Fifi");    
-    debugger
+     
     
     /* HOW THE ABOVE WORKS:
     The replacer-function createDog() below
